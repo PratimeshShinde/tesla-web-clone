@@ -49,6 +49,7 @@ const [email, setEmail] = useState('')
                <div className="signup__divider">
                     <hr /> <span>OR</span> <hr />
                </div>
+            
 
                <Link to='/login'>
                    <ButtonSecondary name='sign in' />
