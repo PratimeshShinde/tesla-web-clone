@@ -5,6 +5,9 @@ import './Signup.css'
 import LanguageOutlinedIcon from '@material-ui/icons/Language';
 import ButtonPrimary from './ButtonPrimary';
 import ButtonSecondary from './ButtonSecondary';
+import { auth } from './firebase'
+import { login } from './features/counter/userSlice';
+
 function Signup() {
 const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -12,6 +15,30 @@ const [email, setEmail] = useState('')
     const [lName, setLName] = useState('')
     const dispatch = useDispatch()
     const history = useHistory()
+
+    const signUp = (e) => {
+        e.preventDefault()
+
+        if (!fName) {
+            return alert('Please enter a first name!')
+        }
+        if (!lName) {
+            return alert('Please enter a last name!')
+        }
+
+        auth.createUserWithEmailAndPassword(email, password).then((userAuth) => {userAuth.user.updateProfile({displayName: fName}).then(() => {
+            dispatch(
+                login({
+                email: userAuth.user.email,
+                uid: userAuth.user.uid,
+                displayNAme: fName,
+            })
+            )
+            history.push('/teslaaccount')
+        })
+    })
+    .catch((error) => alert(error.message))
+    }
 
     return (
         <div className='signup'>
@@ -26,7 +53,7 @@ const [email, setEmail] = useState('')
                </div>
                </div> 
                <div className="signup__info">
-               <h1>Sign In</h1>
+               <h1>Create Account</h1>
                <form className="signup__form">
                    
                <label htmlFor="fName">First Name</label>
@@ -42,7 +69,7 @@ const [email, setEmail] = useState('')
                    <label htmlFor="email">Password</label>
                    <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
 
-                   <ButtonPrimary name="create account" type="submit" />
+                   <ButtonPrimary name="create account" type="submit" onClick={signUp}/>
 
                </form>
 
