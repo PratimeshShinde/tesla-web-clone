@@ -1,22 +1,33 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import './TeslaAccount.css'
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
-import { useSelector } from 'react-redux';
-import { selectUser } from './features/counter/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout, selectUser } from './features/counter/userSlice';
 import Car from './Car';
+import { auth } from './firebase'
 
 function TeslaAccount({ isMenuOpen, setIsMenuOpen }) {
     const user = useSelector(selectUser)
+    const dispatch = useDispatch()
+    const history = useHistory()
 
-    const logoutOfApp = () => {}
+    const logoutOfApp = () => {
+      auth
+      .signOut()
+      .then(() => {
+          dispatch(logout())
+          history.push('/')
+      })
+      .catch((error) => alert(error.message))
+    }
     
     return (
         <div className="teslaAccount">
             <div className="teslaAccount__header">
                 <div className="teslaAccount__logo">
-                    <Link>
+                    <Link to='/'>
                     <img src="https://assets.website-files.com/5e8fceb1c9af5c3915ec97a0/5ec2f037975ed372da9f6286_Tesla-Logo-PNG-HD.png" alt=""/>
                     </Link>
                 </div>
@@ -36,7 +47,7 @@ function TeslaAccount({ isMenuOpen, setIsMenuOpen }) {
             </div>
             <div className="teslaAccount__info">
                 <div className="teslaAccount__person">
-                    <h4>{user?.displayName + "'s"}</h4>
+                    <h4>{user?.displayName + "'s"} Tesla </h4>
                 </div>
                 <div className="teslaAccount__infoRight">
                     <Link>Home</Link>
